@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
       }
-      return session;
+      return session
     }
   },
   secret: process.env.NEXTAUTH_SECRET,
