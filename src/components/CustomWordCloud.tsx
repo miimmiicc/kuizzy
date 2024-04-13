@@ -12,20 +12,20 @@ const data = [
         value: 3,
     },
     {
-        text: "Hey",
-        value: 1,
-    },
-    {
-        text: "Hey",
+        text: "Hi",
         value: 5,
     },
     {
-        text: "Hey",
-        value: 9,
+        text: "Computer",
+        value: 10,
     },
     {
-        text: "Hey",
+        text: "reactjs",
         value: 8,
+    },
+    {
+        text: "live",
+        value: 7,
     },
 
 ];
