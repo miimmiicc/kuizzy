@@ -17,6 +17,7 @@ import { BarChart, ChevronRight, Loader2, Timer } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
+import MCQCounter from "./MCQCounter";
 // import { useToast } from "./ui/use-toast";
 
 type Props = {
@@ -25,13 +26,13 @@ type Props = {
 
 const MCQ = ({ game }: Props) => {
   const [questionIndex, setQuestionIndex] = React.useState(0);
-//   const [hasEnded, setHasEnded] = React.useState(false);
-//   const [stats, setStats] = React.useState({
-//     correct_answers: 0,
-//     wrong_answers: 0,
-//   });
+  //   const [hasEnded, setHasEnded] = React.useState(false);
+  //   const [stats, setStats] = React.useState({
+  //     correct_answers: 0,
+  //     wrong_answers: 0,
+  //   });
   const [selectedChoice, setSelectedChoice] = React.useState<number>(0);
-//   const [now, setNow] = React.useState(new Date());
+  //   const [now, setNow] = React.useState(new Date());
 
   const currentQuestion = React.useMemo(() => {
     return game.questions[questionIndex];
@@ -43,112 +44,112 @@ const MCQ = ({ game }: Props) => {
     return JSON.parse(currentQuestion.options as string) as string[];
   }, [currentQuestion]);
 
-//   const { toast } = useToast();
-//   const { mutate: checkAnswer, isLoading: isChecking } = useMutation({
-//     mutationFn: async () => {
-//       const payload: z.infer<typeof checkAnswerSchema> = {
-//         questionId: currentQuestion.id,
-//         userInput: options[selectedChoice],
-//       };
-//       const response = await axios.post(`/api/checkAnswer`, payload);
-//       return response.data;
-//     },
-//   });
+  //   const { toast } = useToast();
+  //   const { mutate: checkAnswer, isLoading: isChecking } = useMutation({
+  //     mutationFn: async () => {
+  //       const payload: z.infer<typeof checkAnswerSchema> = {
+  //         questionId: currentQuestion.id,
+  //         userInput: options[selectedChoice],
+  //       };
+  //       const response = await axios.post(`/api/checkAnswer`, payload);
+  //       return response.data;
+  //     },
+  //   });
 
-//   const { mutate: endGame } = useMutation({
-//     mutationFn: async () => {
-//       const payload: z.infer<typeof endGameSchema> = {
-//         gameId: game.id,
-//       };
-//       const response = await axios.post(`/api/endGame`, payload);
-//       return response.data;
-//     },
-//   });
+  //   const { mutate: endGame } = useMutation({
+  //     mutationFn: async () => {
+  //       const payload: z.infer<typeof endGameSchema> = {
+  //         gameId: game.id,
+  //       };
+  //       const response = await axios.post(`/api/endGame`, payload);
+  //       return response.data;
+  //     },
+  //   });
 
-//   React.useEffect(() => {
-//     const interval = setInterval(() => {
-//       if (!hasEnded) {
-//         setNow(new Date());
-//       }
-//     }, 1000);
-//     return () => clearInterval(interval);
-//   }, [hasEnded]);
+  //   React.useEffect(() => {
+  //     const interval = setInterval(() => {
+  //       if (!hasEnded) {
+  //         setNow(new Date());
+  //       }
+  //     }, 1000);
+  //     return () => clearInterval(interval);
+  //   }, [hasEnded]);
 
-//   const handleNext = React.useCallback(() => {
-//     checkAnswer(undefined, {
-//       onSuccess: ({ isCorrect }) => {
-//         if (isCorrect) {
-//           setStats((stats) => ({
-//             ...stats,
-//             correct_answers: stats.correct_answers + 1,
-//           }));
-//           toast({
-//             title: "Correct",
-//             description: "You got it right!",
-//             variant: "success",
-//           });
-//         } else {
-//           setStats((stats) => ({
-//             ...stats,
-//             wrong_answers: stats.wrong_answers + 1,
-//           }));
-//           toast({
-//             title: "Incorrect",
-//             description: "You got it wrong!",
-//             variant: "destructive",
-//           });
-//         }
-//         if (questionIndex === game.questions.length - 1) {
-//           endGame();
-//           setHasEnded(true);
-//           return;
-//         }
-//         setQuestionIndex((questionIndex) => questionIndex + 1);
-//       },
-//     });
-//   }, [checkAnswer, questionIndex, game.questions.length, toast, endGame]);
+  //   const handleNext = React.useCallback(() => {
+  //     checkAnswer(undefined, {
+  //       onSuccess: ({ isCorrect }) => {
+  //         if (isCorrect) {
+  //           setStats((stats) => ({
+  //             ...stats,
+  //             correct_answers: stats.correct_answers + 1,
+  //           }));
+  //           toast({
+  //             title: "Correct",
+  //             description: "You got it right!",
+  //             variant: "success",
+  //           });
+  //         } else {
+  //           setStats((stats) => ({
+  //             ...stats,
+  //             wrong_answers: stats.wrong_answers + 1,
+  //           }));
+  //           toast({
+  //             title: "Incorrect",
+  //             description: "You got it wrong!",
+  //             variant: "destructive",
+  //           });
+  //         }
+  //         if (questionIndex === game.questions.length - 1) {
+  //           endGame();
+  //           setHasEnded(true);
+  //           return;
+  //         }
+  //         setQuestionIndex((questionIndex) => questionIndex + 1);
+  //       },
+  //     });
+  //   }, [checkAnswer, questionIndex, game.questions.length, toast, endGame]);
 
-//   React.useEffect(() => {
-//     const handleKeyDown = (event: KeyboardEvent) => {
-//       const key = event.key;
+  //   React.useEffect(() => {
+  //     const handleKeyDown = (event: KeyboardEvent) => {
+  //       const key = event.key;
 
-//       if (key === "1") {
-//         setSelectedChoice(0);
-//       } else if (key === "2") {
-//         setSelectedChoice(1);
-//       } else if (key === "3") {
-//         setSelectedChoice(2);
-//       } else if (key === "4") {
-//         setSelectedChoice(3);
-//       } else if (key === "Enter") {
-//         handleNext();
-//       }
-//     };
+  //       if (key === "1") {
+  //         setSelectedChoice(0);
+  //       } else if (key === "2") {
+  //         setSelectedChoice(1);
+  //       } else if (key === "3") {
+  //         setSelectedChoice(2);
+  //       } else if (key === "4") {
+  //         setSelectedChoice(3);
+  //       } else if (key === "Enter") {
+  //         handleNext();
+  //       }
+  //     };
 
-//     document.addEventListener("keydown", handleKeyDown);
+  //     document.addEventListener("keydown", handleKeyDown);
 
-//     return () => {
-//       document.removeEventListener("keydown", handleKeyDown);
-//     };
-//   }, [handleNext]);
+  //     return () => {
+  //       document.removeEventListener("keydown", handleKeyDown);
+  //     };
+  //   }, [handleNext]);
 
-//   if (hasEnded) {
-    // return (
-    //   <div className="absolute flex flex-col justify-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-    //     <div className="px-4 py-2 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">
-    //       You Completed in{" "}
-    //       {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
-    //     </div>
-    //     <Link
-    //       href={`/statistics/${game.id}`}
-    //       className={cn(buttonVariants({ size: "lg" }), "mt-2")}
-    //     >
-    //       View Statistics
-    //       <BarChart className="w-4 h-4 ml-2" />
-    //     </Link>
-    //   </div>
-    // );
-//   }
+  //   if (hasEnded) {
+  // return (
+  //   <div className="absolute flex flex-col justify-center -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+  //     <div className="px-4 py-2 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">
+  //       You Completed in{" "}
+  //       {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
+  //     </div>
+  //     <Link
+  //       href={`/statistics/${game.id}`}
+  //       className={cn(buttonVariants({ size: "lg" }), "mt-2")}
+  //     >
+  //       View Statistics
+  //       <BarChart className="w-4 h-4 ml-2" />
+  //     </Link>
+  //   </div>
+  // );
+  //   }
 
   return (
     <div className="absolute -translate-x-1/2 -translate-y-1/2 md:w-[80vw] max-w-4xl w-[90vw] top-1/2 left-1/2">
@@ -167,10 +168,10 @@ const MCQ = ({ game }: Props) => {
             {/* {formatTimeDelta(differenceInSeconds(now, game.timeStarted))} */}
           </div>
         </div>
-        {/* <MCQCounter
-          correct_answers={stats.correct_answers}
-          wrong_answers={stats.wrong_answers}
-        /> */}
+        <MCQCounter
+          correct_answers={3}
+          wrong_answers={4}
+        />
       </div>
       <Card className="w-full mt-4">
         <CardHeader className="flex flex-row items-center">
@@ -190,7 +191,7 @@ const MCQ = ({ game }: Props) => {
           return (
             <Button
               key={option}
-            //  key={index} He did this
+              //  key={index} He did this
               variant={selectedChoice === index ? "default" : "outline"}
               className="justify-start w-full py-8 mb-4"
               onClick={() => setSelectedChoice(index)}
@@ -205,7 +206,7 @@ const MCQ = ({ game }: Props) => {
           );
         })}
         <Button
-        //   variant="default"
+          //   variant="default"
           className="mt-2"
         //   size="lg"
         //   disabled={isChecking || hasEnded}
