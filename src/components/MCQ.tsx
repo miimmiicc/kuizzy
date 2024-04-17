@@ -18,7 +18,8 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
 import MCQCounter from "./MCQCounter";
-// import { useToast } from "./ui/use-toast";
+import { checkAnswerSchema } from "@/schemas/form/quiz";
+import { useToast } from "./ui/use-toast";
 
 type Props = {
   game: Game & { questions: Pick<Question, "id" | "options" | "question">[] };
@@ -32,11 +33,46 @@ const MCQ = ({ game }: Props) => {
   //     wrong_answers: 0,
   //   });
   const [selectedChoice, setSelectedChoice] = React.useState<number>(0);
-  //   const [now, setNow] = React.useState(new Date());
+  const [correctAnswers, setCorrectAnswers] = React.useState<number>(0);
+  const [wrongAnswers, setWrongAnswers] = React.useState<number>(0);
 
+  const { toast } = useToast();
+  //   const [now, setNow] = React.useState(new Date());
   const currentQuestion = React.useMemo(() => {
     return game.questions[questionIndex];
   }, [questionIndex, game.questions]);
+
+  const { mutate: checkAnswer, isPending: isChecking } = useMutation({
+    mutationFn: async () => {
+      const payload: z.infer<typeof checkAnswerSchema> = {
+        questionId: currentQuestion.id,
+        userAnswer: options[selectedChoice],
+      };
+      const response = await axios.post("/api/checkAnswer", payload);
+      return response.data
+    },
+  });
+
+  const handleNext = React.useCallback(() => {
+    checkAnswer(undefined, {
+      onSuccess: ({ isCorrect }) => {
+        if (isCorrect) {
+          toast({
+            title: "Correct!",
+            variant: 'success'
+          });
+          setCorrectAnswers((prev) => prev + 1);
+        } else {
+          toast({
+            title: "Wrong!",
+            variant: 'destructive'
+          });
+          setWrongAnswers((prev) => prev + 1);
+        }
+        setQuestionIndex((prev) => prev + 1);
+      }
+    })
+  }, [checkAnswer, toast])
 
   const options = React.useMemo(() => {
     if (!currentQuestion) return [];
@@ -44,7 +80,6 @@ const MCQ = ({ game }: Props) => {
     return JSON.parse(currentQuestion.options as string) as string[];
   }, [currentQuestion]);
 
-  //   const { toast } = useToast();
   //   const { mutate: checkAnswer, isLoading: isChecking } = useMutation({
   //     mutationFn: async () => {
   //       const payload: z.infer<typeof checkAnswerSchema> = {
@@ -208,11 +243,11 @@ const MCQ = ({ game }: Props) => {
         <Button
           //   variant="default"
           className="mt-2"
-        //   size="lg"
-        //   disabled={isChecking || hasEnded}
-        //   onClick={() => {
-        //     handleNext();
-        //   }}
+          //   size="lg"
+          //   disabled={isChecking || hasEnded}
+          onClick={() => {
+            handleNext();
+          }}
         >
           {/* {isChecking && <Loader2 className="w-4 h-4 mr-2 animate-spin" />} */}
           Next <ChevronRight className="w-4 h-4 ml-2" />
