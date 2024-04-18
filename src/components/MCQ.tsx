@@ -8,18 +8,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button, buttonVariants } from "./ui/button";
-// import { differenceInSeconds } from "date-fns";
+import { differenceInSeconds } from "date-fns";
 import Link from "next/link";
 import { BarChart, ChevronRight, Currency, Loader2, Timer } from "lucide-react";
 // import { checkAnswerSchema, endGameSchema } from "@/schemas/questions";
-// import { cn, formatTimeDelta } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
 import MCQCounter from "./MCQCounter";
 import { checkAnswerSchema } from "@/schemas/form/quiz";
 import { toast, useToast } from "./ui/use-toast";
-import { cn } from "@/lib/utils";
+import { cn, formatTimeDelta } from "@/lib/utils";
 
 type Props = {
   game: Game & { questions: Pick<Question, "id" | "options" | "question">[] };
@@ -33,10 +32,23 @@ const MCQ = ({ game }: Props) => {
   //     wrong_answers: 0,
   //   });
   const [selectedChoice, setSelectedChoice] = React.useState<number>(0);
-  //   const [now, setNow] = React.useState(new Date());
   const [correctAnswers, setCorrectAnswers] = React.useState<number>(0);
   const [wrongAnswers, setWrongAnswers] = React.useState<number>(0);
   const [hasEnded, setHasEnded] = React.useState<boolean>(false);
+  const [now, setNow] = React.useState<Date>(new Date());
+  const { toast } = useToast();
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (!hasEnded) {
+        setNow(new Date());
+      }
+    }, 1000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [hasEnded])
+
   const currentQuestion = React.useMemo(() => {
     return game.questions[questionIndex];
   }, [questionIndex, game.questions]);
@@ -110,7 +122,7 @@ const MCQ = ({ game }: Props) => {
     return (
       <div className="absolute flex flex-col justify-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="px-4 mt-2 font-semibold text-white bg-green-500 rounded-md whitespace-nowrap">
-          You completed in {'3m 4s'}
+          You completed in {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
         </div>
         <Link
           href={`/statistics/${game.id}`}
@@ -241,8 +253,7 @@ const MCQ = ({ game }: Props) => {
           </p>
           <div className="flex self-start mt-3 text-slate-400">
             <Timer className="mr-2" />
-            <span>00:00</span>
-            {/* {formatTimeDelta(differenceInSeconds(now, game.timeStarted))} */}
+            {formatTimeDelta(differenceInSeconds(now, game.timeStarted))}
           </div>
         </div>
         <MCQCounter
